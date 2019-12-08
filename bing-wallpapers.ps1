@@ -89,10 +89,10 @@ Write-Host "Downloading images..."
 $client = New-Object System.Net.WebClient
 foreach ($item in $items) {
     $datePrefix = $item.date.ToString("yyyy-MM-dd")
-	$posR = $item.name.IndexOf(".")
-	$nameR = $item.name.Substring($posR+1)
-	$posL = $nameR.IndexOf("_")
-	$name = $nameR.Substring(0,$posL)
+    $posR = $item.name.IndexOf(".")
+    $nameR = $item.name.Substring($posR+1)
+    $posL = $nameR.IndexOf("_")
+    $name = $nameR.Substring(0,$posL)
     $destination = "$downloadFolder\$($name)_$resolution.jpg"
     $url = $item.url
 
