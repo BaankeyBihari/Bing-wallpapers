@@ -1,4 +1,4 @@
-﻿# Bing Wallpapers
+# Bing Wallpapers
 # Fetch the Bing wallpaper image of the day
 # <https://github.com/timothymctim/Bing-wallpapers>
 #
@@ -94,6 +94,7 @@ foreach ($item in $items) {
 	$posL = $nameR.IndexOf("_")
 	$name = $nameR.Substring(0,$posL)
     $destination = "$downloadFolder\$($name)_$resolution.jpg"
+    $url = $item.url
 
     # Download the enclosure if we haven't done so already
     if (!(Test-Path $destination)) {
