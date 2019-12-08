@@ -17,7 +17,7 @@ Param(
     'uk-UA', 'zh-CN', 'zh-HK', 'zh-TW')][string]$locale = 'auto',
 
     # Download the latest $files wallpapers
-    [int]$files = 3,
+    [int]$files = 0,
 
     # Resolution of the image to download
     [ValidateSet('auto', '1024x768', '1280x720', '1366x768',
