@@ -21,7 +21,7 @@ Param(
 
     # Resolution of the image to download
     [ValidateSet('auto', '1024x768', '1280x720', '1366x768',
-    '1920x1080', '1920x1200')][string]$resolution = 'auto',
+    '1920x1080', '1920x1200')][string]$resolution = '1920x1080',
 
     # Destination folder to download the wallpapers to
     [string]$downloadFolder = "$([Environment]::GetFolderPath("MyPictures"))\Wallpapers"
@@ -71,6 +71,7 @@ foreach ($xmlImage in $content.images.image) {
     $item = New-Object System.Object
     $item | Add-Member -Type NoteProperty -Name date -Value $imageDate
     $item | Add-Member -Type NoteProperty -Name url -Value $imageUrl
+    $item | Add-Member -Type NoteProperty -Name name -Value "$($xmlImage.urlBase)"
     $null = $items.Add($item)
 }
 
@@ -87,9 +88,12 @@ if (!($files -eq 0) -and ($items.Count -gt $files)) {
 Write-Host "Downloading images..."
 $client = New-Object System.Net.WebClient
 foreach ($item in $items) {
-    $baseName = $item.date.ToString("yyyy-MM-dd")
-    $destination = "$downloadFolder\$baseName.jpg"
-    $url = $item.url
+    $datePrefix = $item.date.ToString("yyyy-MM-dd")
+	$posR = $item.name.IndexOf(".")
+	$nameR = $item.name.Substring($posR+1)
+	$posL = $nameR.IndexOf("_")
+	$name = $nameR.Substring(0,$posL)
+    $destination = "$downloadFolder\$($name)_$resolution.jpg"
 
     # Download the enclosure if we haven't done so already
     if (!(Test-Path $destination)) {
@@ -102,7 +106,7 @@ if ($files -gt 0) {
     # We do not want to keep every file; remove the old ones
     Write-Host "Cleaning the directory..."
     $i = 1
-    Get-ChildItem -Filter "????-??-??.jpg" $downloadFolder | Sort -Descending FullName | ForEach-Object {
+    Get-ChildItem $downloadFolder | sort LastWriteTime -Descending | ForEach-Object {
         if ($i -gt $files) {
             # We have more files than we want, delete the extra files
             $fileName = $_.FullName
