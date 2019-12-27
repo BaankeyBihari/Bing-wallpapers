@@ -39,7 +39,6 @@ if ($locale -eq 'auto') {
 
 # Get the appropiate screen resolution
 if ($resolution -eq 'auto') {
-    Add-Type -AssemblyName System.Windows.Forms
     $maxWidth = (Get-CimInstance -ClassName Win32_DesktopMonitor| Select-Object ScreenWidth |  measure-object -Property ScreenWidth -maximum).maximum
     $maxHeight = (Get-CimInstance -ClassName Win32_DesktopMonitor| Select-Object ScreenHeight |  measure-object -Property ScreenHeight -maximum).maximum
     if ($maxWidth -le 1024) {
