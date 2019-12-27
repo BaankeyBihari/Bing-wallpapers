@@ -21,7 +21,7 @@ Param(
 
     # Resolution of the image to download
     [ValidateSet('auto', '1024x768', '1280x720', '1366x768',
-    '1920x1080', '1920x1200')][string]$resolution = '1920x1080',
+    '1920x1080', '1920x1200')][string]$resolution = 'auto',
 
     # Destination folder to download the wallpapers to
     [string]$downloadFolder = "$([Environment]::GetFolderPath("MyPictures"))\Wallpapers"
@@ -40,14 +40,15 @@ if ($locale -eq 'auto') {
 # Get the appropiate screen resolution
 if ($resolution -eq 'auto') {
     Add-Type -AssemblyName System.Windows.Forms
-    $primaryScreen = [System.Windows.Forms.Screen]::AllScreens | Where-Object {$_.Primary -eq 'True'}
-    if ($primaryScreen.Bounds.Width -le 1024) {
+    $maxWidth = (Get-CimInstance -ClassName Win32_DesktopMonitor| Select-Object ScreenWidth |  measure-object -Property ScreenWidth -maximum).maximum
+    $maxHeight = (Get-CimInstance -ClassName Win32_DesktopMonitor| Select-Object ScreenHeight |  measure-object -Property ScreenHeight -maximum).maximum
+    if ($maxWidth -le 1024) {
         $resolution = '1024x768'
-    } elseif ($primaryScreen.Bounds.Width -le 1280) {
+    } elseif ($maxWidth -le 1280) {
         $resolution = '1280x720'
-    } elseif ($primaryScreen.Bounds.Width -le 1366) {
+    } elseif ($maxWidth -le 1366) {
         $resolution = '1366x768'
-    } elseif ($primaryScreen.Bounds.Height -le 1080) {
+    } elseif ($maxHeight -le 1080) {
         $resolution = '1920x1080'
     } else {
         $resolution = '1920x1200'
